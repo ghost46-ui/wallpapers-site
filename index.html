@@ -13,12 +13,23 @@ body {
     color: white;
 }
 
+/* HEADER */
 header {
     text-align: center;
     padding: 25px;
     background: linear-gradient(90deg, #ff00cc, #3333ff);
 }
 
+/* SEARCH */
+#searchBox {
+    padding: 10px;
+    width: 60%;
+    border-radius: 20px;
+    border: none;
+    margin-top: 10px;
+}
+
+/* CATEGORIES */
 .categories {
     display: flex;
     justify-content: center;
@@ -104,8 +115,13 @@ header {
 <header>
     <h1>🔥 Wallpaper World Pro</h1>
     <p>Auto-loaded wallpapers system</p>
+
+    <!-- SEARCH BOX -->
+    <input id="searchBox" type="text" placeholder="Search wallpapers..."
+    onkeyup="searchWallpapers()">
 </header>
 
+<!-- CATEGORIES -->
 <div class="categories">
     <div class="cat" onclick="filter('all')">All</div>
     <div class="cat" onclick="filter('nature')">Nature</div>
@@ -113,6 +129,7 @@ header {
     <div class="cat" onclick="filter('cars')">Cars</div>
 </div>
 
+<!-- GALLERY -->
 <div class="gallery" id="gallery"></div>
 
 <!-- VIEWER -->
@@ -122,19 +139,11 @@ header {
     <a id="downloadBtn" class="btn" download>Download</a>
 </div>
 
-<script> function searchWallpapers() {
-    let input = document.getElementById("searchBox").value.toLowerCase();
-
-    let filtered = wallpapers.filter(w =>
-        w.category.toLowerCase().includes(input) ||
-        w.url.toLowerCase().includes(input)
-    );
-
-    renderFiltered(filtered);
-}
+<script>
 
 let wallpapers = [];
 
+/* LOAD WALLPAPERS FROM JSON */
 fetch("data/wallpapers.json")
 .then(res => res.json())
 .then(data => {
@@ -142,7 +151,7 @@ fetch("data/wallpapers.json")
     renderWallpapers("all");
 });
 
-/* RENDER SYSTEM */
+/* RENDER WALLPAPERS */
 function renderWallpapers(category) {
     let gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
@@ -162,21 +171,55 @@ function renderWallpapers(category) {
     });
 }
 
-/* FILTER */
+/* FILTER BUTTONS */
 function filter(category) {
     renderWallpapers(category);
 }
 
-/* VIEWER */
+/* SEARCH FUNCTION */
+function searchWallpapers() {
+    let box = document.getElementById("searchBox");
+
+    if (!box) return;
+
+    let input = box.value.toLowerCase();
+
+    let filtered = wallpapers.filter(w =>
+        w.category.toLowerCase().includes(input)
+    );
+
+    renderFiltered(filtered);
+}
+
+/* RENDER FILTERED RESULTS */
+function renderFiltered(list) {
+    let gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+
+    list.forEach(w => {
+        let div = document.createElement("div");
+        div.className = "wallpaper";
+
+        div.innerHTML = `
+            <img src="${w.url}" onclick="openViewer('${w.url}')">
+        `;
+
+        gallery.appendChild(div);
+    });
+}
+
+/* OPEN IMAGE VIEWER */
 function openViewer(url) {
     document.getElementById("viewerImg").src = url;
     document.getElementById("downloadBtn").href = url;
     document.getElementById("viewer").style.display = "flex";
 }
 
+/* CLOSE VIEWER */
 function closeViewer() {
     document.getElementById("viewer").style.display = "none";
 }
+
 </script>
 
 </body>
