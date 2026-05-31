@@ -8,69 +8,107 @@
 <style>
 body {
     margin: 0;
-    font-family: Arial;
-    background: #0b0b0f;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #1a1a2e, #0b0b0f);
     color: white;
 }
 
-/* HEADER */
+/* HEADER (PREMIUM GLASS STYLE) */
 header {
     text-align: center;
-    padding: 25px;
-    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header p {
+    opacity: 0.7;
 }
 
 /* SEARCH */
 #searchBox {
-    padding: 10px;
+    margin-top: 12px;
+    padding: 12px;
     width: 60%;
-    border-radius: 20px;
+    border-radius: 25px;
     border: none;
-    margin-top: 10px;
+    outline: none;
+    text-align: center;
+    font-size: 15px;
 }
 
 /* CATEGORIES */
 .categories {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    padding: 15px;
+    padding: 18px;
 }
 
 .cat {
-    background: #222;
-    padding: 10px 15px;
-    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    padding: 10px 16px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .cat:hover {
     background: #ff00cc;
+    transform: scale(1.05);
 }
 
-/* GALLERY */
+/* GALLERY (PINTEREST STYLE) */
 .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
+    column-count: 4;
+    column-gap: 15px;
     padding: 20px;
+}
+
+@media (max-width: 1000px) {
+    .gallery { column-count: 3; }
+}
+
+@media (max-width: 700px) {
+    .gallery { column-count: 2; }
+}
+
+@media (max-width: 500px) {
+    .gallery { column-count: 1; }
+}
+
+.wallpaper {
+    break-inside: avoid;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s;
 }
 
 .wallpaper img {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
     border-radius: 15px;
-    cursor: pointer;
-    transition: 0.3s;
+    transition: 0.4s;
+    display: block;
 }
 
-.wallpaper img:hover {
-    transform: scale(1.05);
+.wallpaper:hover img {
+    transform: scale(1.08);
+    filter: brightness(1.1);
 }
 
-/* VIEWER */
+/* VIEWER (MODERN OVERLAY) */
 .viewer {
     display: none;
     position: fixed;
@@ -78,33 +116,42 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0,0,0,0.92);
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    z-index: 999;
 }
 
 .viewer img {
     max-width: 90%;
     max-height: 80%;
-    border-radius: 10px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
 
+/* BUTTON */
 .btn {
     margin-top: 15px;
-    padding: 10px 20px;
-    background: #ff00cc;
+    padding: 12px 22px;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
     border: none;
     color: white;
-    border-radius: 20px;
+    border-radius: 25px;
     cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
 }
 
 .close {
     position: absolute;
     top: 20px;
-    right: 20px;
-    font-size: 30px;
+    right: 25px;
+    font-size: 32px;
     cursor: pointer;
 }
 </style>
@@ -114,10 +161,10 @@ header {
 
 <header>
     <h1>🔥 Wallpaper World Pro</h1>
-    <p>Auto-loaded wallpapers system</p>
+    <p>Premium HD Wallpapers for PC & Mobile</p>
 
-    <!-- SEARCH BOX -->
-    <input id="searchBox" type="text" placeholder="Search wallpapers..."
+    <input id="searchBox" type="text"
+    placeholder="Search wallpapers..."
     onkeyup="searchWallpapers()">
 </header>
 
@@ -136,14 +183,13 @@ header {
 <div class="viewer" id="viewer">
     <span class="close" onclick="closeViewer()">×</span>
     <img id="viewerImg">
-    <a id="downloadBtn" class="btn" download>Download</a>
+    <a id="downloadBtn" class="btn" download>Download Wallpaper</a>
 </div>
 
 <script>
 
 let wallpapers = [];
 
-/* LOAD WALLPAPERS FROM JSON */
 fetch("data/wallpapers.json")
 .then(res => res.json())
 .then(data => {
@@ -151,14 +197,13 @@ fetch("data/wallpapers.json")
     renderWallpapers("all");
 });
 
-/* RENDER WALLPAPERS */
+/* RENDER */
 function renderWallpapers(category) {
     let gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
 
     wallpapers.forEach(w => {
         if (category === "all" || w.category === category) {
-
             let div = document.createElement("div");
             div.className = "wallpaper";
 
@@ -171,18 +216,14 @@ function renderWallpapers(category) {
     });
 }
 
-/* FILTER BUTTONS */
+/* FILTER */
 function filter(category) {
     renderWallpapers(category);
 }
 
-/* SEARCH FUNCTION */
+/* SEARCH */
 function searchWallpapers() {
-    let box = document.getElementById("searchBox");
-
-    if (!box) return;
-
-    let input = box.value.toLowerCase();
+    let input = document.getElementById("searchBox").value.toLowerCase();
 
     let filtered = wallpapers.filter(w =>
         w.category.toLowerCase().includes(input)
@@ -191,7 +232,7 @@ function searchWallpapers() {
     renderFiltered(filtered);
 }
 
-/* RENDER FILTERED RESULTS */
+/* FILTER RENDER */
 function renderFiltered(list) {
     let gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
@@ -208,14 +249,13 @@ function renderFiltered(list) {
     });
 }
 
-/* OPEN IMAGE VIEWER */
+/* VIEWER */
 function openViewer(url) {
     document.getElementById("viewerImg").src = url;
     document.getElementById("downloadBtn").href = url;
     document.getElementById("viewer").style.display = "flex";
 }
 
-/* CLOSE VIEWER */
 function closeViewer() {
     document.getElementById("viewer").style.display = "none";
 }
