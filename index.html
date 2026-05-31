@@ -122,7 +122,16 @@ header {
     <a id="downloadBtn" class="btn" download>Download</a>
 </div>
 
-<script>
+<script> function searchWallpapers() {
+    let input = document.getElementById("searchBox").value.toLowerCase();
+
+    let filtered = wallpapers.filter(w =>
+        w.category.toLowerCase().includes(input) ||
+        w.url.toLowerCase().includes(input)
+    );
+
+    renderFiltered(filtered);
+}
 
 let wallpapers = [];
 
