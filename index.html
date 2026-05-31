@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Wallpaper Gallery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: white;
+}
+
+header {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
+}
+
+h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.cat {
+    background: #222;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.cat:hover {
+    background: #ff00cc;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.wallpaper {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.wallpaper img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.wallpaper:hover {
+    transform: scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🔥 My Wallpaper World</h1>
+    <p>HD Wallpapers for PC & Mobile</p>
+</header>
+
+<div class="categories">
+    <div class="cat">All</div>
+    <div class="cat">Nature</div>
+    <div class="cat">Anime</div>
+    <div class="cat">Abstract</div>
+    <div class="cat">Cars</div>
+</div>
+
+<div class="gallery">
+
+    <div class="wallpaper">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470" />
+    </div>
+
+    <div class="wallpaper">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" />
+    </div>
+
+    <div class="wallpaper">
+        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e" />
+    </div>
+
+</div>
+
+</body>
+</html>
