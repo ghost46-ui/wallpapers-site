@@ -24,6 +24,7 @@ function renderWallpapers(category) {
 
     wallpapers.forEach(w => {
         if (category === "all" || w.category === category) {
+
             let div = document.createElement("div");
             div.className = "wallpaper";
 
@@ -58,6 +59,7 @@ function renderFiltered(list) {
     gallery.innerHTML = "";
 
     list.forEach(w => {
+
         let div = document.createElement("div");
         div.className = "wallpaper";
 
