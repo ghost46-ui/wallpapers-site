@@ -1,21 +1,216 @@
-let wallpapers = [
-    {
-        url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-        category: "nature"
-    },
-    {
-        url: "https://images.unsplash.com/photo-1519681393784-d120267933ba",
-        category: "nature"
-    },
-    {
-        url: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-        category: "cars"
-    },
-    {
-        url: "https://images.unsplash.com/photo-1549924231-f129b911e442",
-        category: "anime"
-    }
-];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wallpaper World Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #1a1a2e, #0b0b0f);
+    color: white;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header p {
+    opacity: 0.7;
+}
+
+/* SEARCH */
+#searchBox {
+    margin-top: 12px;
+    padding: 12px;
+    width: 60%;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: 15px;
+}
+
+/* CATEGORIES */
+.categories {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 18px;
+}
+
+.cat {
+    background: rgba(255,255,255,0.08);
+    padding: 10px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.cat:hover {
+    background: #ff00cc;
+    transform: scale(1.05);
+}
+
+/* GALLERY */
+.gallery {
+    column-count: 4;
+    column-gap: 15px;
+    padding: 20px;
+}
+
+@media (max-width: 1000px) {
+    .gallery { column-count: 3; }
+}
+
+@media (max-width: 700px) {
+    .gallery { column-count: 2; }
+}
+
+@media (max-width: 500px) {
+    .gallery { column-count: 1; }
+}
+
+.wallpaper {
+    break-inside: avoid;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.wallpaper img {
+    width: 100%;
+    border-radius: 15px;
+    transition: 0.4s;
+    display: block;
+}
+
+.wallpaper:hover img {
+    transform: scale(1.08);
+    filter: brightness(1.1);
+}
+
+/* VIEWER */
+.viewer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.92);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+}
+
+.viewer img {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 15px;
+}
+
+.btn {
+    margin-top: 15px;
+    padding: 12px 22px;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    border: none;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 32px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🔥 Wallpaper World Pro</h1>
+    <p>Premium HD Wallpapers for PC & Mobile</p>
+
+    <input id="searchBox" type="text"
+    placeholder="Search wallpapers..."
+    onkeyup="searchWallpapers()">
+</header>
+
+<!-- CATEGORIES -->
+<div class="categories">
+    <div class="cat" onclick="filter('all')">All</div>
+    <div class="cat" onclick="filter('nature')">Nature</div>
+    <div class="cat" onclick="filter('anime')">Anime</div>
+    <div class="cat" onclick="filter('cars')">Cars</div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery" id="gallery"></div>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer">
+    <span class="close" onclick="closeViewer()">×</span>
+    <img id="viewerImg">
+    <a id="downloadBtn" class="btn" download>Download Wallpaper</a>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* FIREBASE CONFIG (PUT YOUR REAL DETAILS HERE) */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* ONLY ONE DECLARATION */
+let wallpapers = [];
+
+/* LOAD FROM FIREBASE */
+async function loadWallpapers() {
+    const querySnapshot = await getDocs(collection(db, "wallpapers"));
+
+    wallpapers = [];
+
+    querySnapshot.forEach((doc) => {
+        wallpapers.push(doc.data());
+    });
+
+    renderWallpapers("all");
+}
+
+loadWallpapers();
 
 /* RENDER */
 function renderWallpapers(category) {
@@ -59,7 +254,6 @@ function renderFiltered(list) {
     gallery.innerHTML = "";
 
     list.forEach(w => {
-
         let div = document.createElement("div");
         div.className = "wallpaper";
 
@@ -82,5 +276,7 @@ function closeViewer() {
     document.getElementById("viewer").style.display = "none";
 }
 
-/* INITIAL LOAD */
-renderWallpapers("all");
+</script>
+
+</body>
+</html>
