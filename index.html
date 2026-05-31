@@ -6,107 +6,133 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* ===== GLOBAL ===== */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #1a1a2e, #0b0b0f);
+    font-family: "Poppins", Arial, sans-serif;
+    background: radial-gradient(circle at top, #141e30, #0a0a0f);
     color: white;
+    overflow-x: hidden;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 header {
     text-align: center;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 40px 20px 20px;
 }
 
 header h1 {
+    font-size: 38px;
     margin: 0;
-    font-size: 32px;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 header p {
     opacity: 0.7;
+    margin-top: 5px;
 }
 
-/* SEARCH */
-#searchBox {
-    margin-top: 12px;
-    padding: 12px;
+/* ===== SEARCH ===== */
+.search-box {
+    margin: 20px auto;
     width: 60%;
-    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 30px;
     border: none;
     outline: none;
     text-align: center;
     font-size: 15px;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
-/* CATEGORIES */
+/* ===== CATEGORIES ===== */
 .categories {
     display: flex;
     justify-content: center;
     gap: 12px;
     flex-wrap: wrap;
-    padding: 18px;
+    margin: 20px 0;
 }
 
 .cat {
-    background: rgba(255,255,255,0.08);
-    padding: 10px 16px;
+    padding: 10px 18px;
     border-radius: 25px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
     cursor: pointer;
     transition: 0.3s;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px;
 }
 
 .cat:hover {
-    background: #ff00cc;
-    transform: scale(1.05);
+    transform: scale(1.1);
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
 }
 
-/* GALLERY */
+/* ===== GALLERY ===== */
 .gallery {
     column-count: 4;
     column-gap: 15px;
     padding: 20px;
 }
 
-@media (max-width: 1000px) {
-    .gallery { column-count: 3; }
-}
-
-@media (max-width: 700px) {
-    .gallery { column-count: 2; }
-}
-
-@media (max-width: 500px) {
-    .gallery { column-count: 1; }
-}
+@media (max-width: 1000px) { .gallery { column-count: 3; } }
+@media (max-width: 700px) { .gallery { column-count: 2; } }
+@media (max-width: 500px) { .gallery { column-count: 1; } }
 
 .wallpaper {
     break-inside: avoid;
     margin-bottom: 15px;
-    border-radius: 15px;
+    border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
+    transition: 0.3s;
 }
 
 .wallpaper img {
     width: 100%;
-    border-radius: 15px;
-    transition: 0.4s;
     display: block;
+    border-radius: 16px;
+    transition: 0.4s;
 }
 
 .wallpaper:hover img {
     transform: scale(1.08);
-    filter: brightness(1.1);
+    filter: brightness(1.15);
 }
 
-/* VIEWER */
+/* ===== HOVER LABEL ===== */
+.wallpaper::after {
+    content: "View";
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.5);
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.wallpaper:hover::after {
+    opacity: 1;
+}
+
+/* ===== VIEWER ===== */
 .viewer {
     display: none;
     position: fixed;
@@ -114,7 +140,7 @@ header p {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.92);
+    background: rgba(0,0,0,0.95);
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -124,24 +150,26 @@ header p {
 .viewer img {
     max-width: 90%;
     max-height: 80%;
-    border-radius: 15px;
+    border-radius: 18px;
+    box-shadow: 0 0 40px rgba(255,0,204,0.3);
 }
 
 .btn {
     margin-top: 15px;
-    padding: 12px 22px;
-    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    padding: 12px 25px;
+    border-radius: 30px;
     border: none;
-    color: white;
-    border-radius: 25px;
     cursor: pointer;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    color: white;
+    text-decoration: none;
 }
 
 .close {
     position: absolute;
     top: 20px;
     right: 25px;
-    font-size: 32px;
+    font-size: 30px;
     cursor: pointer;
 }
 </style>
@@ -150,13 +178,14 @@ header p {
 <body>
 
 <header>
-    <h1>🔥 Wallpaper World Pro</h1>
-    <p>Premium HD Wallpapers for PC & Mobile</p>
-
-    <input id="searchBox" type="text"
-    placeholder="Search wallpapers..."
-    onkeyup="searchWallpapers()">
+    <h1>Wallpaper World Pro</h1>
+    <p>Premium HD Wallpapers</p>
 </header>
+
+<!-- SEARCH -->
+<div class="search-box">
+    <input type="text" id="searchBox" placeholder="Search wallpapers..." onkeyup="searchWallpapers()">
+</div>
 
 <!-- CATEGORIES -->
 <div class="categories">
@@ -173,44 +202,16 @@ header p {
 <div class="viewer" id="viewer">
     <span class="close" onclick="closeViewer()">×</span>
     <img id="viewerImg">
-    <a id="downloadBtn" class="btn" download>Download Wallpaper</a>
+    <a id="downloadBtn" class="btn" download>Download</a>
 </div>
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-/* FIREBASE CONFIG (PUT YOUR REAL DETAILS HERE) */
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-/* ONLY ONE DECLARATION */
-let wallpapers = [];
-
-/* LOAD FROM FIREBASE */
-async function loadWallpapers() {
-    const querySnapshot = await getDocs(collection(db, "wallpapers"));
-
-    wallpapers = [];
-
-    querySnapshot.forEach((doc) => {
-        wallpapers.push(doc.data());
-    });
-
-    renderWallpapers("all");
-}
-
-loadWallpapers();
+<script>
+let wallpapers = [
+    { url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee", category: "nature" },
+    { url: "https://images.unsplash.com/photo-1519681393784-d120267933ba", category: "nature" },
+    { url: "https://images.unsplash.com/photo-1518770660439-4636190af475", category: "cars" },
+    { url: "https://images.unsplash.com/photo-1549924231-f129b911e442", category: "anime" }
+];
 
 /* RENDER */
 function renderWallpapers(category) {
@@ -219,7 +220,6 @@ function renderWallpapers(category) {
 
     wallpapers.forEach(w => {
         if (category === "all" || w.category === category) {
-
             let div = document.createElement("div");
             div.className = "wallpaper";
 
@@ -248,7 +248,7 @@ function searchWallpapers() {
     renderFiltered(filtered);
 }
 
-/* FILTERED RENDER */
+/* FILTERED */
 function renderFiltered(list) {
     let gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
@@ -276,6 +276,8 @@ function closeViewer() {
     document.getElementById("viewer").style.display = "none";
 }
 
+/* INIT */
+renderWallpapers("all");
 </script>
 
 </body>
