@@ -1,51 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Admin Panel</title>
-<style>
-body {
-    font-family: Arial;
-    background: #0b0b0f;
-    color: white;
-    text-align: center;
-}
-
-input, select {
-    padding: 10px;
-    width: 300px;
-    margin: 10px;
-    border-radius: 10px;
-    border: none;
-}
-
-button {
-    padding: 10px 20px;
-    background: #ff00cc;
-    border: none;
-    color: white;
-    border-radius: 20px;
-    cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>🔥 Admin Upload Panel</h1>
-
-<input id="imgUrl" placeholder="Image URL"><br>
-
-<select id="imgCat">
-    <option value="nature">Nature</option>
-    <option value="anime">Anime</option>
-    <option value="cars">Cars</option>
-</select><br>
-
-<button onclick="addWallpaper()">Add Wallpaper</button>
-
 <script>
-function addWallpaper() {
+let API = "https://sheetdb.io/api/v1/uugsr2jejuml7";
+
+async function addWallpaper() {
     let url = document.getElementById("imgUrl").value;
     let cat = document.getElementById("imgCat").value;
 
@@ -54,18 +10,34 @@ function addWallpaper() {
         return;
     }
 
-    alert("⚠️ GitHub does NOT allow direct file writing from browser.");
-
-    alert("Instead, copy this entry into wallpapers.json:");
-
-    let newEntry = {
-        url: url,
-        category: cat
+    let data = {
+        data: {
+            id: Date.now(),
+            url: url,
+            category: cat,
+            downloads: 0
+        }
     };
 
-    console.log(JSON.stringify(newEntry, null, 2));
+    try {
+        let res = await fetch(API, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+            alert("✅ Wallpaper added successfully!");
+            document.getElementById("imgUrl").value = "";
+        } else {
+            alert("❌ Failed to upload");
+        }
+
+    } catch (error) {
+        alert("❌ Error connecting to SheetDB");
+        console.log(error);
+    }
 }
 </script>
-
-</body>
-</html>
