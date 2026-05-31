@@ -13,7 +13,7 @@ body {
     color: white;
 }
 
-/* HEADER (PREMIUM GLASS STYLE) */
+/* HEADER */
 header {
     text-align: center;
     padding: 30px;
@@ -67,7 +67,7 @@ header p {
     transform: scale(1.05);
 }
 
-/* GALLERY (PINTEREST STYLE) */
+/* GALLERY */
 .gallery {
     column-count: 4;
     column-gap: 15px;
@@ -92,8 +92,6 @@ header p {
     border-radius: 15px;
     overflow: hidden;
     cursor: pointer;
-    position: relative;
-    transition: 0.3s;
 }
 
 .wallpaper img {
@@ -108,7 +106,7 @@ header p {
     filter: brightness(1.1);
 }
 
-/* VIEWER (MODERN OVERLAY) */
+/* VIEWER */
 .viewer {
     display: none;
     position: fixed;
@@ -127,10 +125,8 @@ header p {
     max-width: 90%;
     max-height: 80%;
     border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
 
-/* BUTTON */
 .btn {
     margin-top: 15px;
     padding: 12px 22px;
@@ -139,12 +135,6 @@ header p {
     color: white;
     border-radius: 25px;
     cursor: pointer;
-    font-size: 15px;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    transform: scale(1.05);
 }
 
 .close {
@@ -186,14 +176,12 @@ header p {
     <a id="downloadBtn" class="btn" download>Download Wallpaper</a>
 </div>
 
-<script>
-
-let wallpapers = [];
+<script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔴 YOUR FIREBASE CONFIG (you will paste yours here)
+/* FIREBASE CONFIG (PUT YOUR REAL DETAILS HERE) */
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -206,8 +194,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* ONLY ONE DECLARATION */
 let wallpapers = [];
 
+/* LOAD FROM FIREBASE */
 async function loadWallpapers() {
     const querySnapshot = await getDocs(collection(db, "wallpapers"));
 
@@ -229,6 +219,7 @@ function renderWallpapers(category) {
 
     wallpapers.forEach(w => {
         if (category === "all" || w.category === category) {
+
             let div = document.createElement("div");
             div.className = "wallpaper";
 
@@ -257,7 +248,7 @@ function searchWallpapers() {
     renderFiltered(filtered);
 }
 
-/* FILTER RENDER */
+/* FILTERED RENDER */
 function renderFiltered(list) {
     let gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
