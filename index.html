@@ -16,19 +16,19 @@ body {
 /* HEADER */
 header {
     text-align: center;
-    padding: 30px;
+    padding: 25px;
     background: linear-gradient(90deg, #ff00cc, #3333ff);
 }
 
 h1 { margin: 0; }
 
-/* CATEGORY BUTTONS */
+/* CATEGORIES */
 .categories {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 20px;
+    padding: 15px;
 }
 
 .cat {
@@ -55,22 +55,58 @@ h1 { margin: 0; }
     border-radius: 15px;
     overflow: hidden;
     position: relative;
+    cursor: pointer;
 }
 
 .wallpaper img {
     width: 100%;
     height: 300px;
     object-fit: cover;
-    transition: transform 0.4s;
+    transition: 0.3s;
 }
 
 .wallpaper:hover img {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
-/* HIDE SYSTEM */
-.hidden {
+/* FULLSCREEN VIEWER */
+.viewer {
     display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+}
+
+.viewer img {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 10px;
+}
+
+/* BUTTONS */
+.btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background: #ff00cc;
+    color: white;
+    font-size: 16px;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
 }
 </style>
 </head>
@@ -79,10 +115,10 @@ h1 { margin: 0; }
 
 <header>
     <h1>🔥 Wallpaper World</h1>
-    <p>Download HD Wallpapers for PC & Mobile</p>
+    <p>Click any wallpaper to preview & download</p>
 </header>
 
-<!-- CATEGORY BUTTONS -->
+<!-- CATEGORIES -->
 <div class="categories">
     <div class="cat" onclick="filter('all')">All</div>
     <div class="cat" onclick="filter('nature')">Nature</div>
@@ -93,22 +129,29 @@ h1 { margin: 0; }
 <!-- GALLERY -->
 <div class="gallery">
 
-    <div class="wallpaper nature">
+    <div class="wallpaper nature" onclick="openViewer(this)">
         <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
     </div>
 
-    <div class="wallpaper nature">
+    <div class="wallpaper nature" onclick="openViewer(this)">
         <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e">
     </div>
 
-    <div class="wallpaper cars">
+    <div class="wallpaper cars" onclick="openViewer(this)">
         <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70">
     </div>
 
-    <div class="wallpaper anime">
+    <div class="wallpaper anime" onclick="openViewer(this)">
         <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa">
     </div>
 
+</div>
+
+<!-- FULLSCREEN VIEWER -->
+<div class="viewer" id="viewer">
+    <span class="close" onclick="closeViewer()">×</span>
+    <img id="viewerImg">
+    <a id="downloadBtn" class="btn" download>Download Wallpaper</a>
 </div>
 
 <script>
@@ -119,13 +162,24 @@ function filter(category) {
         if (category === 'all') {
             item.style.display = 'block';
         } else {
-            if (item.classList.contains(category)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            item.style.display = item.classList.contains(category) ? 'block' : 'none';
         }
     });
+}
+
+/* OPEN FULLSCREEN */
+function openViewer(el) {
+    let img = el.querySelector('img').src;
+
+    document.getElementById('viewerImg').src = img;
+    document.getElementById('downloadBtn').href = img;
+
+    document.getElementById('viewer').style.display = 'flex';
+}
+
+/* CLOSE FULLSCREEN */
+function closeViewer() {
+    document.getElementById('viewer').style.display = 'none';
 }
 </script>
 
