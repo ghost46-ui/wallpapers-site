@@ -2,41 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Wallpaper World</title>
+<title>Wallpaper World Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: #0b0b0f;
     color: white;
 }
 
-/* HEADER */
 header {
     text-align: center;
     padding: 25px;
     background: linear-gradient(90deg, #ff00cc, #3333ff);
 }
 
-h1 { margin: 0; }
-
-/* CATEGORIES */
 .categories {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 10px;
+    flex-wrap: wrap;
     padding: 15px;
 }
 
 .cat {
-    padding: 10px 15px;
     background: #222;
+    padding: 10px 15px;
     border-radius: 20px;
     cursor: pointer;
-    transition: 0.3s;
 }
 
 .cat:hover {
@@ -51,36 +46,31 @@ h1 { margin: 0; }
     padding: 20px;
 }
 
-.wallpaper {
-    border-radius: 15px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-}
-
 .wallpaper img {
     width: 100%;
     height: 300px;
     object-fit: cover;
+    border-radius: 15px;
+    cursor: pointer;
     transition: 0.3s;
 }
 
-.wallpaper:hover img {
-    transform: scale(1.08);
+.wallpaper img:hover {
+    transform: scale(1.05);
 }
 
-/* FULLSCREEN VIEWER */
+/* VIEWER */
 .viewer {
     display: none;
     position: fixed;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.95);
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    z-index: 999;
 }
 
 .viewer img {
@@ -89,16 +79,14 @@ h1 { margin: 0; }
     border-radius: 10px;
 }
 
-/* BUTTONS */
 .btn {
     margin-top: 15px;
     padding: 10px 20px;
+    background: #ff00cc;
     border: none;
+    color: white;
     border-radius: 20px;
     cursor: pointer;
-    background: #ff00cc;
-    color: white;
-    font-size: 16px;
 }
 
 .close {
@@ -114,11 +102,10 @@ h1 { margin: 0; }
 <body>
 
 <header>
-    <h1>🔥 Wallpaper World</h1>
-    <p>Click any wallpaper to preview & download</p>
+    <h1>🔥 Wallpaper World Pro</h1>
+    <p>Auto-loaded wallpapers system</p>
 </header>
 
-<!-- CATEGORIES -->
 <div class="categories">
     <div class="cat" onclick="filter('all')">All</div>
     <div class="cat" onclick="filter('nature')">Nature</div>
@@ -126,60 +113,60 @@ h1 { margin: 0; }
     <div class="cat" onclick="filter('cars')">Cars</div>
 </div>
 
-<!-- GALLERY -->
-<div class="gallery">
+<div class="gallery" id="gallery"></div>
 
-    <div class="wallpaper nature" onclick="openViewer(this)">
-        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
-    </div>
-
-    <div class="wallpaper nature" onclick="openViewer(this)">
-        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e">
-    </div>
-
-    <div class="wallpaper cars" onclick="openViewer(this)">
-        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70">
-    </div>
-
-    <div class="wallpaper anime" onclick="openViewer(this)">
-        <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa">
-    </div>
-
-</div>
-
-<!-- FULLSCREEN VIEWER -->
+<!-- VIEWER -->
 <div class="viewer" id="viewer">
     <span class="close" onclick="closeViewer()">×</span>
     <img id="viewerImg">
-    <a id="downloadBtn" class="btn" download>Download Wallpaper</a>
+    <a id="downloadBtn" class="btn" download>Download</a>
 </div>
 
 <script>
-function filter(category) {
-    let items = document.querySelectorAll('.wallpaper');
 
-    items.forEach(item => {
-        if (category === 'all') {
-            item.style.display = 'block';
-        } else {
-            item.style.display = item.classList.contains(category) ? 'block' : 'none';
+let wallpapers = [];
+
+fetch("data/wallpapers.json")
+.then(res => res.json())
+.then(data => {
+    wallpapers = data;
+    renderWallpapers("all");
+});
+
+/* RENDER SYSTEM */
+function renderWallpapers(category) {
+    let gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+
+    wallpapers.forEach(w => {
+        if (category === "all" || w.category === category) {
+
+            let div = document.createElement("div");
+            div.className = "wallpaper";
+
+            div.innerHTML = `
+                <img src="${w.url}" onclick="openViewer('${w.url}')">
+            `;
+
+            gallery.appendChild(div);
         }
     });
 }
 
-/* OPEN FULLSCREEN */
-function openViewer(el) {
-    let img = el.querySelector('img').src;
-
-    document.getElementById('viewerImg').src = img;
-    document.getElementById('downloadBtn').href = img;
-
-    document.getElementById('viewer').style.display = 'flex';
+/* FILTER */
+function filter(category) {
+    renderWallpapers(category);
 }
 
-/* CLOSE FULLSCREEN */
+/* VIEWER */
+function openViewer(url) {
+    document.getElementById("viewerImg").src = url;
+    document.getElementById("downloadBtn").href = url;
+    document.getElementById("viewer").style.display = "flex";
+}
+
 function closeViewer() {
-    document.getElementById('viewer').style.display = 'none';
+    document.getElementById("viewer").style.display = "none";
 }
 </script>
 
